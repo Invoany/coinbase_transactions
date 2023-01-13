@@ -1,5 +1,7 @@
 from bitcoinrpc.authproxy import AuthServiceProxy, JSONRPCException
 from datetime import datetime
+import hashlib
+import base58
 rpc_connection = AuthServiceProxy("http://%s:%s@127.0.0.1:8332"%("umbrel", "MUwukWorrYkL75vkfZ6NMmM_lxGFw7h1hGTPIlDbJl8="))
 blockchain_info = rpc_connection.getblockchaininfo()
 
@@ -24,15 +26,35 @@ tx_coinbase= rpc_connection.getrawtransaction ("c13e29f092b13cf77f63c26f6adacb14
 print(tx_coinbase)
 
 print("----------------")
-for block_height in range(1,2):
+exclude_keys_tx=["confirmations","n","locktime","blocktime"]
+for block_height in range(70001,70002):
     block_hash= rpc_connection.getblockhash(block_height)
     block= rpc_connection.getblock(block_hash)
     first_tx = block['tx'][0]
     tx_coinbase= rpc_connection.getrawtransaction (first_tx, True)
     print(tx_coinbase)
-    tx_decode_coinbase= rpc_connection.decoderawtransaction(tx_coinbase)
-    
-    print("One")
-    create_wallet = rpc_connection.createwallet("teste")
-    tx_gettransaction_coinbase= rpc_connection.gettransaction(tx_coinbase, True,False)
-    print(tx_decode_coinbase)
+    #tx_decode_coinbase= rpc_connection.decoderawtransaction(tx_coinbase)
+    print("---------")
+    for key, value in tx_coinbase.items():
+        if key == "vin" :
+            for vin_dict in value:
+                for vin_key, vin_value in vin_dict.items():
+                    print(str(vin_key) + " - " + str(vin_value))
+        elif key == "vout" :
+            for vin_dict in value:
+                for vin_key, vin_value in vin_dict.items():
+                    if vin_key == "scriptPubKey":
+                        for pub_key, pub_value in vin_value.items():
+                            print(str(pub_key) + " - " + str(pub_value))
+                    else:
+                        print(str(vin_key) + " - " + str(vin_value))
+        elif key in exclude_keys_tx:
+            pass
+        else:
+            print(str(key) + " - " + str(value))            
+                #for key_vin, value_vin in i:
+                    #print(key_vin)
+    #print("One")
+    #create_wallet = rpc_connection.createwallet("teste")
+    #tx_gettransaction_coinbase= rpc_connection.gettransaction(tx_coinbase, True,False)
+    #print(tx_decode_coinbase)
