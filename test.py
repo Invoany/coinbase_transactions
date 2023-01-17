@@ -1,6 +1,6 @@
 from bitcoinrpc.authproxy import AuthServiceProxy, JSONRPCException
 #from datetime import datetime
-from decrypt_address import address
+from decrypt import address, hex_to_ascii
 
 rpc_connection = AuthServiceProxy("http://%s:%s@127.0.0.1:8332"%("umbrel", "MUwukWorrYkL75vkfZ6NMmM_lxGFw7h1hGTPIlDbJl8="))
 """blockchain_info = rpc_connection.getblockchaininfo()
@@ -26,7 +26,7 @@ print(tx_coinbase)"""
 
 #print("----------------")
 exclude_keys_tx=["confirmations","n","locktime","blocktime"]
-for block_height in range(70001,70010):
+for block_height in range(0,10):
     block_hash= rpc_connection.getblockhash(block_height)
     block= rpc_connection.getblock(block_hash)
     first_tx = block['tx'][0]
@@ -43,6 +43,7 @@ for block_height in range(70001,70010):
                 for vin_key, vin_value in vin_dict.items():
                     if vin_key == "coinbase":
                         print(str(vin_key) + " - " + str(vin_value))
+                        print("The decoded Conbase - " + hex_to_ascii(vin_value))
         elif key == "vout" :
             for vin_dict in value:
                 for vin_key, vin_value in vin_dict.items():

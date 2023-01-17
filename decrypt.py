@@ -3,6 +3,7 @@
 
 import hashlib
 import base58
+import binascii
 
 # ECDSA bitcoin Public Key
 #pubkey = '04c335d94e062103d2f2081a1b71183c4130cf79ec86ea11f47a3827bad0fe1c6f5385c9d7869c07809232cc356f2172ffcec45c3d524de9ea82356623ce03e2ef'
@@ -38,6 +39,11 @@ def address(pubkey, compress_pubkey):
     checksum = sha.hexdigest()[0:8]
     return (base58.b58encode( bytes(bytearray.fromhex('00' + hash160(is_pubkey_compress(pubkey,compress_pubkey)) + checksum)) )).decode('utf-8')
 
+def hex_to_ascii(hex_str):
+    hex_str = hex_str.replace(' ', '').replace('0x', '').replace('\t', '').replace('\n', '')
+    ascii_str = binascii.unhexlify(hex_str)
+    return format(''.join(chr(i) for i in ascii_str))
 
 if __name__ == "__main__":
     print(address(pubkey, compress_pubkey))
+    print(hex_to_ascii(hex_str))
