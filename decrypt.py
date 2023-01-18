@@ -40,10 +40,11 @@ def address(pubkey, compress_pubkey):
     return (base58.b58encode( bytes(bytearray.fromhex('00' + hash160(is_pubkey_compress(pubkey,compress_pubkey)) + checksum)) )).decode('utf-8')
 
 def hex_to_ascii(hex_str):
-    hex_str = hex_str.replace(' ', '').replace('0x', '').replace('\t', '').replace('\n', '')
+    hex_str = hex_str.replace(' ', '').replace('0x', '').replace('\t', '').replace('\n', '').replace('\r', '')
     ascii_str = binascii.unhexlify(hex_str)
     return format(''.join(chr(i) for i in ascii_str))
 
 if __name__ == "__main__":
     print(address(pubkey, compress_pubkey))
+    #hex_str="04ffff001d010d"
     print(hex_to_ascii(hex_str))

@@ -1,6 +1,7 @@
 from bitcoinrpc.authproxy import AuthServiceProxy, JSONRPCException
-#from datetime import datetime
+from datetime import datetime
 from decrypt import address, hex_to_ascii
+import pandas as pd
 
 rpc_connection = AuthServiceProxy("http://%s:%s@127.0.0.1:8332"%("umbrel", "MUwukWorrYkL75vkfZ6NMmM_lxGFw7h1hGTPIlDbJl8="))
 """blockchain_info = rpc_connection.getblockchaininfo()
@@ -26,34 +27,36 @@ print(tx_coinbase)"""
 
 #print("----------------")
 exclude_keys_tx=["confirmations","n","locktime","blocktime"]
-for block_height in range(0,10):
+all_blocks = pd.DataFrame()
+for block_height in range(1,100000):
     block_hash= rpc_connection.getblockhash(block_height)
     block= rpc_connection.getblock(block_hash)
     first_tx = block['tx'][0]
     tx_coinbase= rpc_connection.getrawtransaction (first_tx, True)
-    #print(tx_coinbase)
-    #tx_decode_coinbase= rpc_connection.decoderawtransaction(tx_coinbase)
-    #print("---------")
-    print(str("block height") + " - " + str(block_height))
+    tx_dict = pd.Series([],dtype=pd.StringDtype())
+    tx_dict['block_height'] = block_height
     for key, value in tx_coinbase.items():
         if key == "txid":
-            print(str(key) + " - " + str(value))
+            tx_dict['txid'] = value
         elif key == "vin" :
             for vin_dict in value:
                 for vin_key, vin_value in vin_dict.items():
                     if vin_key == "coinbase":
-                        print(str(vin_key) + " - " + str(vin_value))
-                        print("The decoded Conbase - " + hex_to_ascii(vin_value))
+                        tx_dict['coinbase_hex'] = vin_value
+                        #print(vin_value)
+                        tx_dict['coinbase_decoded'] = hex_to_ascii(vin_value).replace('\r', ' ').replace('\n', ' ').replace('\t', '')
         elif key == "vout" :
-            for vin_dict in value:
-                for vin_key, vin_value in vin_dict.items():
-                    if vin_key == "scriptPubKey":
-                        for pub_key, pub_value in vin_value.items():
+            for vou_dict in value:
+                for vou_key, vou_value in vou_dict.items():
+                    if vou_key == "scriptPubKey":
+                        for pub_key, pub_value in vou_value.items():
                             if pub_key == "type":
-                                print(str(pub_key) + " - " + str(pub_value))
+                                tx_dict['type'] = pub_value
                             elif pub_key == "asm":
                                 asm_list = pub_value.split()
-                                print("address - " + str(address(asm_list[0], False)))
+                                tx_dict['address'] = address(asm_list[0], False)
+                    elif vou_key == "value":
+                        tx_dict[vou_key] = vou_value
                     else:
                         pass
                         #print(str(vin_key) + " - " + str(vin_value))
@@ -61,4 +64,12 @@ for block_height in range(0,10):
             pass
         else:
             pass
-            #print(str(key) + " - " + str(value))            
+    #print(tx_dict)
+    df = tx_dict.to_frame()
+    #print(df)
+    df = pd.DataFrame.from_dict(tx_dict)  
+    #print(df)  
+    df_T= df.transpose()
+    all_blocks = pd.concat([all_blocks, df_T])
+all_blocks["value"] = pd.to_numeric(all_blocks["value"])
+all_blocks.to_csv('All_Coinbase_Transactions_{}.csv'.format(str(datetime.today().strftime('%Y%m%d'))), escapechar='\\')
