@@ -29,7 +29,7 @@ print(tx_coinbase)"""
 exclude_keys_tx=["confirmations","n","locktime","blocktime"]
 all_blocks = pd.DataFrame()
 i = 0
-for block_height in range(79750,150000):
+for block_height in range(150000,300000):
     i += 1
     #print(i)
     block_hash= rpc_connection.getblockhash(block_height)
