@@ -8,7 +8,7 @@ exclude_keys_tx=["confirmations","n","locktime","blocktime"]
 
 all_blocks = pd.DataFrame()
 i = 0
-for block_height in range(152249,152300):
+for block_height in range(1,200000):
     i += 1
     block_hash= rpc_connection.getblockhash(block_height)
     block= rpc_connection.getblock(block_hash)
@@ -53,7 +53,7 @@ for block_height in range(152249,152300):
     df_T= df.transpose()
     df_T.set_index("block_height", inplace = True)
     all_blocks = pd.concat([all_blocks, df_T])
-    if i > 10:
+    if i == 10:
         all_blocks["value"] = pd.to_numeric(all_blocks["value"])
         all_blocks.to_csv('All_Coinbase_Transactions_{}.csv'.format(str(datetime.today().strftime('%Y%m%d'))), escapechar='\\')
         i=0
