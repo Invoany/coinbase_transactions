@@ -42,9 +42,17 @@ def address(pubkey, compress_pubkey):
 def hex_to_ascii(hex_str):
     hex_str = hex_str.replace(' ', '').replace('0x', '').replace('\t', '').replace('\n', '').replace('\r', '')
     ascii_str = binascii.unhexlify(hex_str)
-    return format(''.join(chr(i) for i in ascii_str))
+    #return format(''.join(chr(i) for i in ascii_str))
+    ascii_str_no_null=b''
+    for i in ascii_str:
+        if i in range(0,32) or i > 126 :
+            pass
+        else:
+            ascii_str_no_null = ascii_str_no_null + i.to_bytes(1,'little')
+    return (ascii_str_no_null)
 
 if __name__ == "__main__":
-    print(address(pubkey, compress_pubkey))
-    #hex_str="04ffff001d010d"
-    print(hex_to_ascii(hex_str))
+    #print(address(pubkey, compress_pubkey))
+    #hex_str="04ffff001d027303"
+    #print(hex_to_ascii(hex_str))
+    pass
