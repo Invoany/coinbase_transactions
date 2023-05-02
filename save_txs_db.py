@@ -1,7 +1,6 @@
 from decrypt import address, hex_to_ascii
 import pandas as pd
-import time
-from sql_test import bitcoin_sqlite3, check_database, check_max
+from sql_calls import bitcoin_sqlite3, check_database, check_max
 from rpc_calls import getblockhash, getblock, getrawtransaction
 #~/umbrel/scripts/app restart bitcoin
 
@@ -15,7 +14,7 @@ try:
 except:
     min_height = 1
     insert_type = 'replace'
-max_height = 350101
+max_height = 360001
 
 for block_height in range(min_height,max_height):
     i += 1
@@ -36,7 +35,8 @@ for block_height in range(min_height,max_height):
                         series_tx['coinbase_hex'] = vin_value
                         series_tx['coinbase_decoded'] = hex_to_ascii(vin_value)
         elif key == "vout":
-            a_value, b_value = []
+            a_value= []
+            b_value = []
             for tx_cb_receiver in value:
                 a_value.append(format(tx_cb_receiver['value'],'.8f'))
                 sc_dict = tx_cb_receiver['scriptPubKey']
