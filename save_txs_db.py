@@ -1,7 +1,7 @@
-from decrypt import address, hex_to_ascii
+from Adhoc.decrypt import address, hex_to_ascii
 import pandas as pd
-from sql_calls import bitcoin_sqlite3, check_database, check_max
-from rpc_calls import getblockhash, getblock, getrawtransaction
+from Adhoc.sql_calls import bitcoin_sqlite3, check_database, check_max
+from Adhoc.rpc_calls import getblockhash, getblock, getrawtransaction
 #~/umbrel/scripts/app restart bitcoin
 
 #exclude_keys_tx=["confirmations","n","locktime","blocktime"]
