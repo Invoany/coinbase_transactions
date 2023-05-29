@@ -27,13 +27,13 @@ def getblock(block_hash):
 def getrawtransaction(first_tx):
     rpc_connection = AuthServiceProxy("http://%s:%s@%s:%s"%(rpcuser, rpcpassword, host, port ), timeout=timeout)
     try:
-        tx_coinbase= rpc_connection.getrawtransaction(first_tx, True)
+        tx= rpc_connection.getrawtransaction(first_tx, True)
     except:
         print("Got error waiting 60 seconds on getrawtransaction")
         time.sleep(60)
         rpc_connection = AuthServiceProxy("http://%s:%s@%s:%s"%(rpcuser, rpcpassword, host, port ), timeout=timeout)
-        tx_coinbase= rpc_connection.getrawtransaction(first_tx, True)
-    return tx_coinbase
+        tx= rpc_connection.getrawtransaction(first_tx, True)
+    return tx
 
 if __name__ == "__main__":
     print(getblockhash(350000))

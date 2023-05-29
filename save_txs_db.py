@@ -14,7 +14,7 @@ try:
 except:
     min_height = 1
     insert_type = 'replace'
-max_height = 360001
+max_height = 788001
 
 for block_height in range(min_height,max_height):
     i += 1
