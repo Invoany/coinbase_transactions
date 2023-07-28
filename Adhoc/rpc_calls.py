@@ -35,7 +35,19 @@ def getrawtransaction(first_tx):
         tx= rpc_connection.getrawtransaction(first_tx, True)
     return tx
 
+def getblockcount():
+    rpc_connection = AuthServiceProxy("http://%s:%s@%s:%s"%(rpcuser, rpcpassword, host, port ), timeout=timeout)
+    try:
+        block_height= rpc_connection.getblockcount()
+    except:
+        print("Got error waiting 60 seconds on getblockcount")
+        time.sleep(60)
+        rpc_connection = AuthServiceProxy("http://%s:%s@%s:%s"%(rpcuser, rpcpassword, host, port ), timeout=timeout)
+        block_height= rpc_connection.getblockcount()
+    return block_height
+
 if __name__ == "__main__":
-    print(getblockhash(350000))
-    print(getblock("0000000000000000053cf64f0400bb38e0c4b3872c38795ddde27acb40a112bb"))
+    #print(getblockhash(350000))
+    #print(getblock("0000000000000000053cf64f0400bb38e0c4b3872c38795ddde27acb40a112bb"))
+    #print(getblockcount())
     pass

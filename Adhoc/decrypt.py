@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 # https://en.bitcoin.it/wiki/Protocol_documentation#Addresses
+# https://gist.github.com/circulosmeos/ef6497fd3344c2c2508b92bb9831173f
 
 import hashlib
 import base58
