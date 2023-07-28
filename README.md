@@ -13,9 +13,6 @@ from Adhoc.decrypt import address, hex_to_ascii
 - For the connection to the **bitcoin ledger** *RPC Calls* where been used, just like the script used in [How to connect to your own Bitcoin Node using RPC Calls and Python](/posts/connect-to-Bitcoin-using-RPC-Calls/)
 - Also a library was imported to [Easily generate the bitcoin address from the public key using Python](https://gist.github.com/circulosmeos/ef6497fd3344c2c2508b92bb9831173f) and adapted to also Decode the **Coinbase Messages**.
 
-> The **Coinbase Messages** are encoded in form of *hexadecimal* characters that needs to be converted to *ASCII* for us *humans* to understand.
-{: .prompt-tip }
-
 ### The Script Header
 
 Let's initialize our Script be defining some variables.
@@ -50,21 +47,12 @@ for block_height in range(min_height,max_height):
     series_tx['block_height'] = block_height
     series_tx['txid'] = coinbase_txid
 ```
-Each time we *interate* trough a block we are going to count the blocks we are *treating* (we will see at then *end* why! *Stay tune*)
-
-> So where is the information of each *Coinbase Transaction*?
-We know that the **first transaction** of a block is goint to be the **transaction reward**.
-{: .prompt-info }
+Each time we *interate* trough a block we are going to count the blocks we are *treating* (we will see at then *end* why! *Stay tune*).
 
 We are bringing the *Hash* of **each block** we are *checking* by using the *getblockhash*.
 With that *Hash* we check the information inside of that specific block by using *getblock*.
-> We can find a lot of information inside of a **Block** like: the *Hash*, the *Size*, the *Height*, the *Version*, the *Time* it take, the *difficulty*, the *transactions*...T
-{: .prompt-tip }
 
 We want information **only** regarding the transaction (['tx']) and we **only** want the **first Transaction** information because is the *one related* to the *reward* 
-
-> The **ID** is going to be **Zero** because in Python Indexs start at **Zero** and not at **One** [0]).
-{: .prompt-tip }
 
 So the variable *coinbase_txid* will give us the *Hash* of the **Coinbase reward** transaction.
 By using *getrawtransaction* we can access **all the attributes** for the specific given *Hash* and save them in a *Dictionary* object called **tx_coinbase**.
@@ -114,10 +102,6 @@ elif key == "vout":
 Its a little more *complex* but *easy* to understand, let's see *step* by *step*:
 1. First we **identify** the *Attibute* with a dict of *output information*.
 2. We create *empty* lists that we are going to use to save **Addresses** and **Values** respectively.
-
-    > A **Block reward** can have several **Output addresses**, same happens to **values**, dont forget that besides the *Reward* the **Miner** also receives the **fees** originated from the *transaction* in that block.
-    {: .prompt-warning }
-
 3. For the attribute **Value** we want it to be *treated* has a **Float** with a maximum of **8 decimal places**, and *append* the **values** to the list created.
 4. Now we need to *identify* the *type* of the **pubkey** that is inside of the attribute **scriptPubKey**.
   - *If type =* **pubkeyhash** *then* *append* the **address** attribute into the *list*.
@@ -138,7 +122,7 @@ all_blocks = pd.concat([all_blocks, df_T])
 - **First** we need to pick our *Series* and convert it into  *Dataframe*.
 - However we have only **2 columns**, one for the *Attribute name* and the other for the *Value* of that sttribute, let's **transpose** that *information* so we have **only one line** by *transction*.
 - Now it's easy to *identify* that the **Block Height** is going to be our *Index*, it's *unique* for each **block reward**.
-- Finnaly we append this information into the empty *Dataframe* we created on the **Script Header**, one by one this *Dataframe* is going to append all *Transactions* and then *pass* to the **next block** or **next interaction** on the *for loop* .
+- Finnaly we append this information into the empty *Dataframe* we created on the **Script Header**, one by one this *Dataframe* is going to append all *Transactions* and then *pass* to the **next block** or **next interaction** on the *for loop*.
 
 ### Saving Coinbase Transactions into a Database
 
@@ -153,14 +137,3 @@ if i==100 or block_height == (max_height - 1):
 
 Each time we have **100 transactions** in our *Dataframe* or we reached the *highest valid block height* se save the *Dataframe* in a **SQLite** Table.
 **Reset** the *Dataframe* and also the *incremental variable*.
-
-## Conclusion
-The **Bitcoin** *Coinbase transaction* holds immense importance in the world of **cryptocurrencies**. 
-
-It not only **incentivizes** *miners* but also plays a crucial role in *maintaining* the **security**, **integrity**, and **consensus** of the *blockchain*. 
-
-As the **Bitcoin network** continues to *evolve*, understanding the significance of *Coinbase transactions* provides a **deeper** insight into the **inner** workings of this *revolutionary digital currency*.
-
-To check the full Scipt or Github project please check my Github page.
-
-Thank you for your attention!
