@@ -12,6 +12,7 @@ except:
 
 max_height = getblockcount()
 all_blocks = pd.DataFrame()
+max_height= 100
 i = 0
 
 for block_height in range(min_height,max_height):
@@ -49,5 +50,7 @@ for block_height in range(min_height,max_height):
     all_blocks = pd.concat([all_blocks, df_T])
     if i==100 or block_height == (max_height - 1):
         bitcoin_sqlite3(all_blocks,insert_type)
+        all_blocks.to_csv("teste.csv")
         all_blocks = pd.DataFrame() 
+        
         i=0
